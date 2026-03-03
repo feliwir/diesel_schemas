@@ -1,0 +1,16 @@
+[package]
+name = "diesel-schemas"
+version = "0.1.0"
+edition = "2024"
+
+[features]
+default = ["postgres"]
+postgres = ["diesel/postgres"]
+
+[dependencies]
+diesel = { version = "2.3.6", features = [
+    "i-implement-a-third-party-backend-and-opt-into-breaking-changes",
+] }
+
+[dev-dependencies]
+diesel_migrations = "2.3.1"
