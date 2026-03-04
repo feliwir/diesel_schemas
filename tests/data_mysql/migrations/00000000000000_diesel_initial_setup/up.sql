@@ -1,0 +1,1 @@
+-- MySQL initial setup (no helper functions needed)

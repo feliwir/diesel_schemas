@@ -5,3 +5,6 @@ pub mod pool;
 
 #[cfg(feature = "postgres")]
 pub mod pg;
+
+#[cfg(feature = "mysql")]
+pub mod mysql;

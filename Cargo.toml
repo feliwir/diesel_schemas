@@ -4,8 +4,9 @@ version = "0.1.0"
 edition = "2024"
 
 [features]
-default = ["postgres", "r2d2"]
+default = ["postgres", "r2d2", "mysql"]
 postgres = ["diesel/postgres"]
+mysql = ["diesel/mysql"]
 r2d2 = ["diesel/r2d2"]
 
 [dependencies]
