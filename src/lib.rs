@@ -2,3 +2,6 @@
 pub mod conn;
 #[cfg(feature = "r2d2")]
 pub mod pool;
+
+#[cfg(feature = "postgres")]
+pub mod pg;
