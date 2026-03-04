@@ -37,7 +37,7 @@ jobs:
       - name: Run tests
         env:
           DATABASE_URL: postgres://postgres:postgres@localhost/diesel_schemas
-        run: cargo test --no-default-features --features "postgres,r2d2"
+        run: cargo test --no-default-features --features "postgres,r2d2,async"
 
   test-mysql:
     name: Test (mysql)
@@ -70,4 +70,4 @@ jobs:
       - name: Run tests
         env:
           DATABASE_URL: mysql://root:root@127.0.0.1/diesel_schemas
-        run: cargo test --no-default-features --features "mysql,r2d2"
+        run: cargo test --no-default-features --features "mysql,r2d2,async"
