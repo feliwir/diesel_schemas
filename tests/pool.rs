@@ -5,15 +5,20 @@ pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!("./tests/data/migra
 mod data;
 
 #[test]
-#[cfg(feature = "postgres")]
-fn switch_schema() {
+#[cfg(all(feature = "postgres", feature = "r2d2"))]
+fn pool_schema() {
     use diesel::prelude::*;
     use diesel_migrations::MigrationHarness;
-    use diesel_schemas::conn::SchemaConnection;
+    use diesel_schemas::pool::SchemaPool;
 
     let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
-    let mut connection =
-        diesel::PgConnection::establish(&database_url).expect("Failed to connect to database");
+    let manager = ConnectionManager::<diesel::PgConnection>::new(database_url);
+
+    let pool = Pool::builder()
+        .build(manager)
+        .expect("Failed to create connection pool");
+
+    let mut connection = pool.get().expect("Failed to get connection from pool");
 
     // Create the "books" and "pages" tables in the default schema
     connection
@@ -22,6 +27,7 @@ fn switch_schema() {
 
     // Get all books and pages in the default schema
     use data::schema::{books, pages};
+    use diesel::r2d2::{ConnectionManager, Pool};
     let default_books = books::table
         .load::<(i32, String)>(&mut connection)
         .expect("Failed to load books from default schema");
@@ -39,10 +45,10 @@ fn switch_schema() {
         "Expected no pages in default schema"
     );
 
-    // Create a new schema and switch to it
-    connection
-        .set_schema("new_schema")
-        .expect("Failed to switch schema");
+    // Get a new connection from the pool with the new schema
+    let mut connection = pool
+        .get_with_schema("new_pool_schema")
+        .expect("Failed to get connection from pool with new schema");
 
     // Rerun all pending migrations in the new schema (should create the tables there)
     connection
